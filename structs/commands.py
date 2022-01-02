@@ -6,14 +6,15 @@ class Commands:
         self.commands = []
 
     def set_commands(self, req_content: dict) -> list:
-        for _id, command in req_content.items():
-            self.commands.append(command)
+        self.commands = req_content['commands']
         return self.commands
 
     def set_commands_unique(self, req_content: dict) -> list:
-        for _id, command in req_content.items():
-            if command not in self.commands:
-                self.commands.append(command)
+        res = []
+        for command in req_content['commands']:
+            if command not in res:
+                res.append(command)
+        self.commands = res
         return self.commands
 
     def get_commands(self) -> list:
