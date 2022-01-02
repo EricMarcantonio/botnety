@@ -1,3 +1,1 @@
-# Botnety
-# Server Prod
-# Server Dev
+# Botnety - Server Dev
