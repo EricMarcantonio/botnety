@@ -1,9 +1,9 @@
 from flask import Flask, request
 from structs import commands
 import json
-app = Flask(__name__)
 
-commands = commands.Commands()
+command = commands.Commands()
+app = Flask(__name__)
 
 
 @app.route('/', methods=['GET'])
@@ -12,23 +12,35 @@ def home():
 
 
 @app.route('/api/v1/commands', methods=['POST', 'GET'])
-def request_commands():
+def commands():
     # content = request.json
     data = dict()
     if request.method == 'POST':
-        if 'commands' not in request.json:
+        if 'command' not in request.json:
             return "Commands list is not present.", 400
         if len(request.json) != 1:
             return "Request is not the right length.", 400
-        if not isinstance(request.json['commands'], list):
+        if not isinstance(request.json['command'], list):
             return "Commands is not a list.", 400
-        if len(request.json['commands']) == 0:
-            return "Commands array does not contain commands.", 400
-        if not all(isinstance(x, str) for x in request.json['commands']):
+        if len(request.json['command']) == 0:
+            return "Commands array does not contain command.", 400
+        if not all(isinstance(x, str) for x in request.json['command']):
             return "Commands array should only contain strings.", 400
-        data['commands'] = commands.set_commands(request.json)
+        data['command'] = command.set_commands(request.json)
     else:
-        data['commands'] = commands.get_commands_unique()
+        data['command'] = command.get_commands_unique()
+    response = app.response_class(
+        response=json.dumps(data),
+        status=200,
+        mimetype='application/json'
+    )
+    return response
+
+
+@app.route('/api/v1/commands_encrypted', methods=['GET'])
+def commands_encrypted():
+    data = dict()
+    data['command'], data['tag'], data['key'] = command.get_commands_encrypted_unique()
     response = app.response_class(
         response=json.dumps(data),
         status=200,
