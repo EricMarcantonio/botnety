@@ -40,7 +40,18 @@ def commands():
 @app.route('/api/v1/commands_encrypted', methods=['GET'])
 def commands_encrypted():
     data = dict()
-    data['command'], data['tag'], data['key'] = command.get_commands_encrypted_unique()
+    data['command'], data['tag'], data['key'], data['nonce'] = command.get_commands_encrypted_unique()
+    response = app.response_class(
+        response=json.dumps(data),
+        status=200,
+        mimetype='application/json'
+    )
+    return response
+
+
+@app.route('/api/v1/commands_decrypt', methods=['GET'])
+def commands_decrypt():
+    data = command.get_commands_decrypt(request.json['command'], request.json['tag'], request.json['key'], request.json['nonce'])
     response = app.response_class(
         response=json.dumps(data),
         status=200,

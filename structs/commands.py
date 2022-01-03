@@ -41,5 +41,21 @@ class Commands:
         ciphertext = base64.urlsafe_b64encode(ciphertext).decode("utf-8")
         tag = base64.urlsafe_b64encode(tag).decode("utf-8")
         key = base64.urlsafe_b64encode(key).decode("utf-8")
-        return ciphertext, tag, key
+        nonce = base64.urlsafe_b64encode(cipher.nonce).decode("utf-8")
+        return ciphertext, tag, key, nonce
 
+    def get_commands_decrypt(self, commands: str, tag: str, key: str, nonce: str) -> dict:
+        res = dict()
+        commands = base64.urlsafe_b64decode(commands.encode("utf-8"))
+        tag = base64.urlsafe_b64decode(tag.encode("utf-8"))
+        key = base64.urlsafe_b64decode(key.encode("utf-8"))
+        nonce = base64.urlsafe_b64decode(nonce.encode("utf-8"))
+        cipher = AES.new(key, AES.MODE_EAX, nonce)
+        try:
+            data = cipher.decrypt_and_verify(commands, tag)
+            res['verified'] = "true"
+            res['data'] = data.decode("utf-8")
+        except:
+            res['verified'] = "false"
+            res['data'] = ""
+        return res
