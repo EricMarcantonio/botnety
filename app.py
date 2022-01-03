@@ -13,9 +13,9 @@ def home():
 
 @app.route('/api/v1/commands', methods=['POST', 'GET'])
 def commands():
-    # content = request.json
     data = dict()
-    if request.method == 'POST':
+
+    def validate_post() -> (str, int):
         if 'command' not in request.json:
             return "Commands list is not present.", 400
         if len(request.json) != 1:
@@ -26,9 +26,16 @@ def commands():
             return "Commands array does not contain command.", 400
         if not all(isinstance(x, str) for x in request.json['command']):
             return "Commands array should only contain strings.", 400
-        data['command'] = command.set_commands(request.json)
+        return "OK", 200
+
+    if request.method == 'POST':
+        msg, code = validate_post()
+        if code == 200:
+            command.set_commands(request.json)
+        return msg, code
     else:
         data['command'] = command.get_commands_unique()
+
     response = app.response_class(
         response=json.dumps(data),
         status=200,
