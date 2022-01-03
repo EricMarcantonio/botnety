@@ -15,7 +15,7 @@ type RESPONSE struct {
 }
 
 func main() {
-	lol := `{ "commands": ["echo 'hello worl'"]}`
+	lol := `{ "commands": ["pwd"]}`
 	response := RESPONSE{}
 	err := json.Unmarshal([]byte(lol), &response)
 	if err != nil {
